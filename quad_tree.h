@@ -24,29 +24,18 @@ struct Node {
     }      
 };
 
-class Quadtree {
+class QuadTree {
 public:     
-    Quadtree(CImg<char> img) : m_pRoot(0) {
+    QuadTree(CImg<char> img) : m_pRoot(0) {
         this->img = img;
-        m_pRoot->x1 = 0;
-        m_pRoot->y1 = 0;
-        m_pRoot->x2 = img.width()-1;
-        m_pRoot->y2 = img.height()-1;
-
+        Node *r = new Node(0, 0, img.width() - 1, img.height() - 1);
+        m_pRoot = r;
+    
         build(0, 0, img.width() - 1, img.height() - 1, m_pRoot);
     }
     
-    void Insert(int x, int y, string name, Node* p){          
-        if (!p){
-            p = new Node(x, y, name);
-            return;
-        }
-        
-        Insert(x, y, name, p->children[cuadrante(x, y, p)]);
-        
-    }
 
-    void Print (Node* r) {
+    /*void Print (Node* r) {
         if(!r) return;	   
         cout<<"("<<r->x<<" "<<r->y<<") -- > ";
         cout<<endl;
@@ -54,7 +43,7 @@ public:
         for(int i =0;i<4;i++) {
             Print(r->children[i]);
         }      
-    }
+    }*/
 
    
 private:
@@ -84,7 +73,6 @@ private:
     }
 
     bool check (int x1, int y1, int x2, int y2) {
-
         auto c = img(x1,y1);
         
         for(int i = x1; i < x2; ++i) {
