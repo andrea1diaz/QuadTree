@@ -13,6 +13,7 @@ struct Node {
     int y2;
     int color;
     Node *children[4];
+    bool isLeaf = false;
     
     Node (int x1, int y1, int x2, int y2) {
         this->x1 = x1;
@@ -25,13 +26,20 @@ struct Node {
 };
 
 class QuadTree {
+private:
+    CImg<char> output;
+
 public:     
     QuadTree(CImg<char> img) : m_pRoot(0) {
         this->img = img;
         Node *r = new Node(0, 0, img.width() - 1, img.height() - 1);
         m_pRoot = r;
+        // CImg<char> tmp (img.width(), img.height(), 1, 0);
+        output = img;
         // cout << img.width() - 1 << "|" << img.height() - 1 << endl;
         build(0, 0, img.width() - 1, img.height() - 1, m_pRoot);
+        build_output(m_pRoot);
+        output.display();
     }
     
 
@@ -53,6 +61,7 @@ private:
     void build(int x1, int y1, int x2, int y2, Node* root) {
         if (check(x1, y1, x2, y2)) {
             root->color = img(x1,y1);
+            root->isLeaf = true;
             return;
         }
         
@@ -84,6 +93,22 @@ private:
         }
         
         return true;
+    }
+
+    void build_output(Node* p) {
+        if (p) {
+            if (p->isLeaf) {
+                for (int i = p->x1; i <= p->x2; ++i) {
+                    for (int j = p->y1; j <= p->y2; ++j) {
+                        output(i, j) = p->color;
+                    }
+                }
+            }
+            build_output(p->children[0]);
+            build_output(p->children[1]);
+            build_output(p->children[2]);
+            build_output(p->children[3]);
+        }
     }
 
 public:
