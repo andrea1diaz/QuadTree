@@ -1,5 +1,3 @@
-#define cimg_use_jpg 1
-#include "CImg.h"
 #include <iostream>
 #include <vector>
 #include "quad_tree.h"
@@ -26,7 +24,7 @@ CImg<char> Binarizar(CImg<float> & img, int umbral) {
 
 int main() {
    
-    CImg<float> A("horse1.jpg");
+    CImg<float> A("punto.jpg");
     CImg<char> R =  Binarizar(A,40);
 //    A.display();
 //    R.display();

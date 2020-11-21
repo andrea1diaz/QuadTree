@@ -30,7 +30,7 @@ public:
         this->img = img;
         Node *r = new Node(0, 0, img.width() - 1, img.height() - 1);
         m_pRoot = r;
-    
+        // cout << img.width() - 1 << "|" << img.height() - 1 << endl;
         build(0, 0, img.width() - 1, img.height() - 1, m_pRoot);
     }
     
@@ -56,20 +56,22 @@ private:
             return;
         }
         
-        int x_m = (x2 - x1) / 2;
-        int y_m = (y2 - y1) / 2;
+        int x_m = floor((x2 + x1) / 2);
+        int y_m = floor((y2 + y1) / 2);
+
+        // cout << "x1: " << x1 << " y1: " << y1 << " x2: " << x2 << " y2: " << y2 << " x_m: " << x_m << " y_m: " << y_m << endl;
         
-        root->children[0] = new Node (x1, y1, x_m, y_m);
-        build(x1, y1, x_m, y_m, root->children[0]);
+        root->children[0] = new Node (x1, y1, x_m - 1, y_m - 1);
+        build(x1, y1, x_m - 1, y_m - 1, root->children[0]);
 
-        root->children[1] = new Node(x_m, y1, x2, y_m);
-        build(x_m, y1, x2, y_m, root->children[1]);
+        root->children[1] = new Node(x_m + 1, y1, x2, y_m - 1);
+        build(x_m + 1, y1, x2, y_m - 1, root->children[1]);
          
-        root->children[2] = new Node (x1, y_m, x_m, y2);
-        build(x1, y_m, x_m, y2, root->children[2]);
+        root->children[2] = new Node (x1, y_m + 1, x_m - 1, y2);
+        build(x1, y_m + 1, x_m - 1, y2, root->children[2]);
 
-        root->children[3] = new Node(x_m, y_m, x2, y2);
-        build(x_m, y_m, x2, y2, root->children[3]);
+        root->children[3] = new Node(x_m + 1, y_m + 1, x2, y2);
+        build(x_m + 1, y_m + 1, x2, y2, root->children[3]);
     }
 
     bool check (int x1, int y1, int x2, int y2) {
@@ -84,6 +86,19 @@ private:
         return true;
     }
 
+public:
+    ~QuadTree() {
+        if (m_pRoot) destroy(m_pRoot);
+    }
 
+    void destroy(Node* p) {
+        if (p) {
+            destroy(p->children[0]);
+            destroy(p->children[1]);
+            destroy(p->children[2]);
+            destroy(p->children[3]);
+            delete p;
+        }
+    }
     
 };
