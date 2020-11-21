@@ -24,7 +24,7 @@ CImg<char> Binarizar(CImg<float> & img, int umbral) {
 
 int main() {
    
-    CImg<float> A("punto.jpg");
+    CImg<float> A("mbutle.4.jpg");
     CImg<char> R =  Binarizar(A,40);
 //    A.display();
 //    R.display();
