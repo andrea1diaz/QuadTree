@@ -30,6 +30,7 @@ int main() {
 //    R.display();
  
     QuadTree qt(R);
+    qt.reconstruir();
    
     return 0;
 }
