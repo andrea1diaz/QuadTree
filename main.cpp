@@ -23,14 +23,22 @@ CImg<char> Binarizar(CImg<float> & img, int umbral) {
 
 
 int main() {
-   
     CImg<float> A("mbutle.4.jpg");
     CImg<char> R =  Binarizar(A,40);
 //    A.display();
 //    R.display();
- 
-    QuadTree qt(R);
-    qt.reconstruir();
+
+    int input;
+    do {
+        cout << "Comprimir (1) o reconstruir (2): "; cin >> input;
+    } while (input != 1 && input != 2);
+
+    if (input == 1) {
+        QuadTree qt(R);
+    } else {
+        QuadTree qt;
+        qt.reconstruir();
+    }
    
     return 0;
 }

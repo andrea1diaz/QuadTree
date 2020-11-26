@@ -8,6 +8,7 @@ using namespace cimg_library;
 using namespace std;
 
 const string filename = "data.dat";
+const string dimensiones = "dimensiones.dat";
 
 struct Node {
     int x1;
@@ -30,24 +31,39 @@ struct Node {
 
 class QuadTree {
 private:
-    CImg<char> output;
-    int width, height;
+    Node * m_pRoot;
+    CImg<char> img;
 
-public:     
+public:
+    QuadTree() = default;
+
     QuadTree(CImg<char> img) : m_pRoot(0) {
-        this->img = img;
         Node *r = new Node(0, 0, img.width() - 1, img.height() - 1);
-        width = img.width();
-        height = img.height();
+
+        this->img = img;
         m_pRoot = r;
-        output = img;
+        int width = img.width();
+        int height = img.height();
+
+        clear_files();
+
+        ofstream myfile(dimensiones, ios::binary);
+        myfile.write((char*) &width, sizeof(int));
+        myfile.write((char*) &height, sizeof(int));
+        myfile.close();
         
         build(0, 0, img.width() - 1, img.height() - 1, m_pRoot);
-        build_output(m_pRoot);
     }
 
     void reconstruir() {
-        CImg<char> img2(width, height);
+        int _width, _height;
+
+        ifstream dim(dimensiones, ios::binary);
+        dim.read((char*) &_width, sizeof(int));
+        dim.read((char*) &_height, sizeof(int));
+        dim.close();
+
+        CImg<char> img2(_width, _height);
         ifstream myfile(filename, ios::binary);
         if (myfile.is_open()) {
             myfile.seekg(0, ios::end);
@@ -73,9 +89,6 @@ public:
     }
    
 private:
-    Node * m_pRoot;
-    CImg<char> img;
-
     void build(int x1, int y1, int x2, int y2, Node* root) {
         if (check(x1, y1, x2, y2)) {
             root->color = img(x1,y1);
@@ -95,8 +108,6 @@ private:
         int x_m = floor((x2 + x1) / 2);
         int y_m = floor((y2 + y1) / 2);
 
-        // cout << "x1: " << x1 << " y1: " << y1 << " x2: " << x2 << " y2: " << y2 << " x_m: " << x_m << " y_m: " << y_m << endl;
-        
         root->children[0] = new Node (x1, y1, x_m - 1, y_m - 1);
         build(x1, y1, x_m - 1, y_m - 1, root->children[0]);
 
@@ -122,20 +133,13 @@ private:
         return true;
     }
 
-    void build_output(Node* p) {
-        if (p) {
-            if (p->isLeaf) {
-                for (int i = p->x1; i <= p->x2; ++i) {
-                    for (int j = p->y1; j <= p->y2; ++j) {
-                        output(i, j) = p->color;
-                    }
-                }
-            }
-            build_output(p->children[0]);
-            build_output(p->children[1]);
-            build_output(p->children[2]);
-            build_output(p->children[3]);
-        }
+    void clear_files() {
+        ofstream f1, f2;
+        f1.open(dimensiones, ofstream::out | ofstream::trunc);
+        f1.close();
+        
+        f2.open(filename, ofstream::out | ofstream::trunc);
+        f2.close();
     }
 
 public:
