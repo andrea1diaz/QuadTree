@@ -30,13 +30,16 @@ int main() {
 
     int input;
     do {
-        cout << "Comprimir (1) o reconstruir (2): "; cin >> input;
-    } while (input != 1 && input != 2);
+        cout << "Comprimir (1) o reconstruir (2) o ambos (3): "; cin >> input;
+    } while (input != 1 && input != 2 && input != 3);
 
     if (input == 1) {
         QuadTree qt(R);
-    } else {
+    } else if (input == 2) {
         QuadTree qt;
+        qt.reconstruir();
+    } else {
+        QuadTree qt(R);
         qt.reconstruir();
     }
    
