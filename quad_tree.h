@@ -67,7 +67,7 @@ public:
         ifstream myfile(filename, ios::binary);
         if (myfile.is_open()) {
             myfile.seekg(0, ios::end);
-            int bloques = myfile.tellg()/(4*sizeof(int) + sizeof(char));
+            int bloques = myfile.tellg()/(4*sizeof(short) + sizeof(char));
             myfile.seekg(0, ios::beg);
             short x1, y1, x2, y2;
             char col;
