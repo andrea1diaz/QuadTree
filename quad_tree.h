@@ -69,13 +69,13 @@ public:
             myfile.seekg(0, ios::end);
             int bloques = myfile.tellg()/(4*sizeof(int) + sizeof(char));
             myfile.seekg(0, ios::beg);
-            int x1, y1, x2, y2;
+            short x1, y1, x2, y2;
             char col;
             for (int i = 0; i < bloques; ++i) {
-                myfile.read((char*) &x1, sizeof(int));
-                myfile.read((char*) &y1, sizeof(int));
-                myfile.read((char*) &x2, sizeof(int));
-                myfile.read((char*) &y2, sizeof(int));
+                myfile.read((char*) &x1, sizeof(short));
+                myfile.read((char*) &y1, sizeof(short));
+                myfile.read((char*) &x2, sizeof(short));
+                myfile.read((char*) &y2, sizeof(short));
                 myfile.read((char*) &col, sizeof(char));
                 for (int j = x1; j <= x2; ++j) {
                     for (int k = y1; k <= y2; ++k) {
@@ -89,24 +89,24 @@ public:
     }
    
 private:
-    void build(int x1, int y1, int x2, int y2, Node* root) {
+    void build(short x1, short y1, short x2, short y2, Node* root) {
         if (check(x1, y1, x2, y2)) {
             root->color = img(x1,y1);
             root->isLeaf = true;
             ofstream myfile(filename, ios::binary | ios::app);
             if (myfile.is_open()) {
-                myfile.write((char*) &x1, sizeof(int));
-                myfile.write((char*) &y1, sizeof(int));
-                myfile.write((char*) &x2, sizeof(int));
-                myfile.write((char*) &y2, sizeof(int));
+                myfile.write((char*) &x1, sizeof(short));
+                myfile.write((char*) &y1, sizeof(short));
+                myfile.write((char*) &x2, sizeof(short));
+                myfile.write((char*) &y2, sizeof(short));
                 myfile.write((char*) &(img(x1, y1)), sizeof(char));
                 myfile.close();
             }
             return;
         }
         
-        int x_m = floor((x2 + x1) / 2);
-        int y_m = floor((y2 + y1) / 2);
+        short x_m = floor((x2 + x1) / 2);
+        short y_m = floor((y2 + y1) / 2);
 
         root->children[0] = new Node (x1, y1, x_m - 1, y_m - 1);
         build(x1, y1, x_m - 1, y_m - 1, root->children[0]);
